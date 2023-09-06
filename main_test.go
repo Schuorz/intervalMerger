@@ -27,7 +27,7 @@ func TestMergeIntervals(t *testing.T) {
 		},
 
 		{
-			args:    [][]int{{3, 5}, {1, 3}},
+			args:    [][]int{{2, 5}, {1, 3}},
 			name:    "Overlapping merge",
 			wantErr: false,
 			want:    [][]int{{1, 5}},

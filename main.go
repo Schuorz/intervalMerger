@@ -124,7 +124,7 @@ func main() {
 
 	merged, err := MERGE(intervals)
 	if err != nil {
-		log.Fatalf("could not merge intervals: %w", err)
+		log.Fatalf("could not merge intervals: %s", err.Error())
 	}
 
 	fmt.Printf("Merged intervals:\n %v", merged)
