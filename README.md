@@ -29,9 +29,9 @@ ordering the already merged intervals after every merge attempt.
 For **n** intervals passed to the program, we 
 actually have a worst case of **1+2+3+4...+n** merge attempts. This is the little
 gaussian formula  
-$$ \sum_{k=1}^n = \frac{n(n+1)}{2} = \frac{n^2+n}{2} $$  
+$$\sum_{k=1}^n=\frac{n(n+1)}{2}=\frac{n^2+n}{2}$$  
 which amounts to
-**O($$n^2$$)**.  
+**O($n^2$)**.  
 That being said this only is true for cases in which the intervals
 passed to the program are non overlapping and in ascending order.
 E.g. [1,2], [2,3], [3,4], [4,5]. In the two best case scenarios,
