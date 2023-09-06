@@ -40,7 +40,7 @@ e.g. [4,5], [3,4], [2,3], [1,2] or one of the first two intervals
 is one that encases the others. In both cases there will always be
 just one merge attempt for every following interval, amounting to a best case runtime
 complexity of: **O(n)**  
-The average runtime complexity will thus be something between **O(n)** and **O($$n^2$$)**.
+The average runtime complexity will thus be something between **O(n)** and **O($n^2$)**.
 In scenarios where the worst case is applied more often a possible solution would be to
 pre sort the intervals or even order them randomly (this would be beneficial because it would 
 be guraranteed to run in O(n)).
