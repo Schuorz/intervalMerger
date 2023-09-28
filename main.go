@@ -78,32 +78,56 @@ func MERGE(intervals [][]int) ([][]int, error) {
 	}
 
 	for i := 2; i < len(intervals); i++ {
+		toBeMerged := intervals[i]
+		mergeHappened := false
+		mergeHere := 0
+		lastJ := 0
 		for j, mI := range mergedIntervals {
-			subMerge, err := mergeIntervals(intervals[i], mI)
+			subMerge, err := mergeIntervals(toBeMerged, mI)
 			if err != nil {
 				return nil, err
 			}
 
-			// two cases:
-			// 1. if two intervals where in fact merged, replace the old one with the new one
-			// nothing further needs to be done, since the intervals in mergedIntervals are sorted
+			// two cases (adapting to whether there was already a merge):
+			// 1. if two intervals where in fact merged, remember the position
+			// continue by trying to merge the newly merged interval into the next ones,
+			// remember newest merge
 			// 2. if two intervals were not merged, continue ONLY if the one that is currently merged
 			// into mergedIntervals is returned as the latter interval. Since the intervals are sorted
-			// merges only need to be attempted until we are out of bound
-			if len(subMerge) == 1 || reflect.DeepEqual(subMerge[0], intervals[i]) {
-				mergedIntervals = slices.Replace(mergedIntervals, j, j+1, subMerge...)
+			// merges only need to be attempted until we are out of bound. If it is indeed the first one
+			// either insert it or replace all the intervals starting from the remembered position to the
+			// current one with the merge (outside the for loop).
+
+			if len(subMerge) == 1 {
+				if !mergeHappened {
+					mergeHere = j
+				}
+				lastJ = j
+				mergeHappened = true
+				toBeMerged = subMerge[0]
+				continue
+			}
+			if reflect.DeepEqual(subMerge[0], toBeMerged) {
+				// no merge only insert if no merge happened
+				if !mergeHappened {
+					mergedIntervals = slices.Replace(mergedIntervals, j, j+1, subMerge...)
+				}
 				break
 			}
 
 			// if we are in the last run and the current interval was returned second, it needs to be appended at the end
 			if j == len(mergedIntervals)-1 {
-				// since the last if did not run, this needs to be true
-				// if not then the logic is broken, check anyways
-				if !reflect.DeepEqual(subMerge[1], intervals[i]) {
+				// since the last if did not run, the current interval needs to be second
+				// if a merge happened though, the current interval cannot be second (its lower bound will always be smaller)
+				// if this should occur the logic is broken, check to be sure
+				if !reflect.DeepEqual(subMerge[1], toBeMerged) || mergeHappened {
 					return nil, fmt.Errorf("interval to be merged could not be sorted into the intervals, something is serioulsy wrong")
 				}
 				mergedIntervals = slices.Replace(mergedIntervals, j, j+1, subMerge...)
 			}
+		}
+		if mergeHappened {
+			mergedIntervals = slices.Replace(mergedIntervals, mergeHere, lastJ+1, toBeMerged)
 		}
 	}
 
